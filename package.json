@@ -1,7 +1,8 @@
 {
-  "name": "frontend",
+  "name": "nexuswp-frontend",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "Vue 3 admin/front-end assets for the NexusWP WordPress plugin.",
   "type": "module",
   "scripts": {
     "dev": "./node_modules/.bin/vite",

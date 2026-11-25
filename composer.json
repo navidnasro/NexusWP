@@ -1,11 +1,46 @@
 {
+    "name": "nexuswp/plugin",
+    "description": "NexusWP plugin skeleton: application layer on top of the nexuswp/core framework.",
+    "type": "wordpress-plugin",
+    "license": "MIT",
     "require": {
+        "php": "^8.2",
         "ext-json": "*",
-        "ext-curl": "*"
+        "nexuswp/core": "^1.0"
     },
+    "suggest": {
+        "fakerphp/faker": "Needed only when seeding demo data, i.e. when NEXUSWP_RUN_SEEDERS is true"
+    },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "core",
+            "options": {
+                "symlink": true,
+                "versions": {
+                    "nexuswp/core": "1.0.0"
+                }
+            }
+        }
+    ],
     "autoload": {
         "psr-4": {
-            "jetstore\\": "."
-        }
-    }
+            "nexuswp\\app\\": "app/",
+            "nexuswp\\bootstraps\\": "bootstraps/",
+            "nexuswp\\database\\": "database/",
+            "nexuswp\\routes\\": "routes/"
+        },
+        "classmap": [
+            "Environment.php"
+        ]
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": false
+    },
+    "scripts": {
+        "test": "php tests/framework_test.php",
+        "lint": "find . -name '*.php' -not -path './vendor/*' -not -path './node_modules/*' -exec php -l {} \\;"
+    },
+    "minimum-stability": "stable"
 }

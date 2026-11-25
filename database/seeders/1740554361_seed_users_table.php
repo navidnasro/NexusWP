@@ -1,8 +1,8 @@
 <?php
 
-namespace jetstore\database\seeders;
+namespace nexuswp\database\seeders;
 
-use jetstore\core\database\seeder\Seeder;
+use nexuswp\core\database\seeder\Seeder;
 
 return new class extends Seeder
 {

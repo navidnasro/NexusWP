@@ -1,8 +1,8 @@
 <?php
 
-namespace jetstore\database\migrations;
+namespace nexuswp\database\migrations;
 
-use jetstore\core\database\migration\Migration;
+use nexuswp\core\database\migration\Migration;
 
 return new class extends Migration
 {

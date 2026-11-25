@@ -1,6 +1,7 @@
 <?php
 
-use jetstore\app\events\onExampleEvent;
-use jetstore\core\events\EventListener;
+use nexuswp\app\events\UserRegistered;
+use nexuswp\core\events\EventListener;
 
-EventListener::register(new onExampleEvent());
+// listeners are stored by class name and only constructed when the event fires
+EventListener::on('user.registered', UserRegistered::class);

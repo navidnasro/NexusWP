@@ -1,33 +1,24 @@
 <?php
 
-use jetstore\core\job\AbstractJob;
+use nexuswp\core\job\AbstractJob;
+use nexuswp\core\job\JobDispatcher;
+use nexuswp\core\job\JobScheduler;
 
-// Schedule repetitive jobs
-//$scheduler = new JobScheduler();
-//$scheduler->registerJobs(
-//    [
-//        ExampleJob::class => ['arg1','arg2','arg3'],
-//    ]
-//);
+// recurring jobs: registered once, then WordPress cron keeps the schedule.
+// the bundled job is disabled by default so a fresh install schedules nothing.
+//
+// $scheduler = new JobScheduler();
+// $scheduler->registerJobs([
+//     \nexuswp\app\jobs\SyncProductsJob::class => ['source' => 'warehouse'],
+// ]);
 
-// Schedule single run jobs, background processes
-//JobDispatcher::dispatch(ExampleJob::class);
-//JobDispatcher::dispatch(ExampleJob::class, 'optionalParam4', 'optionalParam3');
+// one-off run, queued through WP-Cron instead of running inside the request
+// JobDispatcher::dispatch(\nexuswp\app\jobs\SyncProductsJob::class);
 
-$reservedActions = get_option('cronjobs_that_need_explicit_run');
+// stored job hooks only matter while cron is running: skipping the call here
+// keeps normal page loads and REST requests from touching the registry option
+$runningCron = (defined('DOING_CRON') && DOING_CRON)
+    || (function_exists('wp_doing_cron') && wp_doing_cron());
 
-if ($reservedActions)
-{
-    foreach ($reservedActions as $action)
-    {
-        $hook = $action['hook'];
-        $class = $action['class'];
-        $method = $action['method'];
-        $argsCount = $action['argsCount'];
-
-        $object = new $class();
-
-        if ($object instanceof AbstractJob)
-            add_action($hook, [$object, $method], 10, $argsCount);
-    }
-}
+if ($runningCron)
+    AbstractJob::restoreRegisteredActions();

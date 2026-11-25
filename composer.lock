@@ -4,18 +4,63 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0a08821152f9aa675b7133658c146f4d",
-    "packages": [],
+    "content-hash": "97ceb7b519f018977787bbb7be6354fc",
+    "packages": [
+        {
+            "name": "nexuswp/core",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "core",
+                "reference": "cf9e799cb9ac341143d3f0a2968b2a4f2b3af52a"
+            },
+            "require": {
+                "ext-json": "*",
+                "php": "^8.2"
+            },
+            "suggest": {
+                "fakerphp/faker": "Required by the seeder layer when NEXUSWP_RUN_SEEDERS is enabled"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "nexuswp\\core\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "NavidNasro",
+                    "homepage": "https://github.com/navidnasro"
+                }
+            ],
+            "description": "Framework internals for NexusWP: routing, database, migrations, hooks, events, jobs and storage.",
+            "keywords": [
+                "framework",
+                "migration",
+                "orm",
+                "plugin",
+                "router",
+                "wordpress"
+            ],
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
+        }
+    ],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {},
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "ext-json": "*",
-        "ext-curl": "*"
+        "php": "^8.2",
+        "ext-json": "*"
     },
-    "platform-dev": [],
+    "platform-dev": {},
     "plugin-api-version": "2.6.0"
 }

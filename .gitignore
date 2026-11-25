@@ -1,5 +1,15 @@
-storage/logs/log-*.json
-storage/app/**/*.json
-storage/app/**/*.img
-storage/app/**/*.png
+/node_modules/
 /vendor/
+
+# runtime output
+/storage/logs/log-*.json
+/storage/app/**/*.json
+/storage/app/**/*.img
+/storage/app/**/*.png
+
+# editor and OS noise
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+

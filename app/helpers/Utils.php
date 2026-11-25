@@ -1,103 +1,43 @@
 <?php
 
-namespace jetstore\app\helpers;
+namespace nexuswp\app\helpers;
 
-use Exception;
-use jetstore\app\models\Log;
-use jetstore\app\models\User;
-use jetstore\Environment;
+use nexuswp\app\models\User;
+use nexuswp\core\Config;
+use nexuswp\core\support\Jwt;
+use nexuswp\Environment;
 
+/**
+ * Small plugin-side helpers. Framework-level helpers live in nexuswp\core.
+ */
 class Utils
 {
     /**
-     * returns string with translatable textdomain
-     *
-     * @param string $data
-     * @return string
+     * returns a string translated with the plugin text domain
      */
     public static function withTranslation(string $data): string
     {
-        return esc_html__($data,Environment::TextDomain);
+        return esc_html__($data, Environment::TextDomain);
     }
 
-    public static function jwtEncode(array $payload,string $key): string
+    public static function jwtEncode(array $payload, string $key): string
     {
-        return base64_encode(json_encode($payload)).'.'.hash_hmac('sha256',json_encode($payload),$key);
+        return Jwt::encode($payload, $key);
     }
 
-    public static function jwtDecode(string $token, string $key)
+    public static function jwtDecode(string $token, string $key): object|false
     {
-        list($payload, $signature) = explode('.', $token);
-        $valid_signature = hash_hmac('sha256',base64_decode($payload),$key);
-
-        if ($valid_signature !== $signature)
-            return false;
-
-        return json_decode(base64_decode($payload));
+        return Jwt::decode($token, $key);
     }
 
     public static function validateToken(string $token): bool
     {
-        $payload = self::jwtDecode($token,AUTH_KEY);
+        $payload = self::jwtDecode($token, Config::authKey());
 
-        if (!$payload)
+        if (!$payload || empty($payload->user_id))
             return false;
 
-        $user = User::find($payload->id);
-
-        if (!$user)
-            return false;
-
-        return true;
-    }
-
-    public static function sendSms(string $phoneNumber, int $messageId, array $args): bool
-    {
-        try {
-            $data = [
-                'username'  => '09129364742',
-                'password'  => 'F$D#R',
-                'text'      => implode(';', $args),
-                'to'        => $phoneNumber,
-                'bodyId'    => $messageId
-            ];
-
-            $postData = http_build_query($data);
-            $handle = curl_init('https://rest.payamak-panel.com/api/SendSMS/BaseServiceNumber');
-
-            curl_setopt($handle, CURLOPT_HTTPHEADER,
-                [
-                    'content-type' => 'application/x-www-form-urlencoded'
-                ]
-            );
-
-            curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($handle, CURLOPT_SSL_VERIFYHOST, false);
-            curl_setopt($handle, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($handle, CURLOPT_POST, true);
-            curl_setopt($handle, CURLOPT_POSTFIELDS, $postData);
-
-            $response = curl_exec($handle);
-            curl_close($handle);
-
-            return (bool)$response;
-
-        }catch (Exception $exception)
-        {
-            curl_close($handle);
-
-            Log::create(
-                [
-                    'user_id'   => null,
-                    'message'   => $exception->getMessage(),
-                    'ip'        => Utils::getUserIpAddress(),
-                    'type'      => 'Message send curl error to : '.$phoneNumber.' , message code : '.$messageId,
-                    'file'      => 'Utils.php',
-                ]
-            );
-
-            return false;
-        }
+        return User::find((int)$payload->user_id) !== null;
     }
 
     public static function convertToEnglishDigits(string $input): array|string
@@ -111,18 +51,34 @@ class Utils
 
     public static function getUserIpAddress(): string
     {
-        // If using Cloudflare and trust its IPs
-        if (isset($_SERVER['HTTP_CF_CONNECTING_IP']))
-            return sanitize_text_field($_SERVER['HTTP_CF_CONNECTING_IP']);
+        $remoteAddress = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '';
 
-        // Use X-Forwarded-For safely if you're behind a trusted proxy
-        if (!empty($_SERVER['HTTP_X_FORWARDED_FOR']))
+        // proxy headers are only trusted when the request comes from a known proxy
+        if (self::isTrustedProxy($remoteAddress))
         {
-            $ip_list = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
-            return sanitize_text_field(trim(end($ip_list)));
+            if (!empty($_SERVER['HTTP_CF_CONNECTING_IP']))
+                return sanitize_text_field($_SERVER['HTTP_CF_CONNECTING_IP']);
+
+            if (!empty($_SERVER['HTTP_X_FORWARDED_FOR']))
+            {
+                $ip_list = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+                return sanitize_text_field(trim($ip_list[0]));
+            }
         }
 
-        // Fallback: Direct IP
-        return sanitize_text_field($_SERVER['REMOTE_ADDR']);
+        return sanitize_text_field($remoteAddress);
+    }
+
+    /**
+     * checks the configured proxy allow list (define NEXUSWP_TRUSTED_PROXIES in wp-config.php)
+     */
+    private static function isTrustedProxy(string $ip): bool
+    {
+        if ($ip === '' || !defined('NEXUSWP_TRUSTED_PROXIES'))
+            return false;
+
+        $proxies = (array)NEXUSWP_TRUSTED_PROXIES;
+
+        return in_array($ip, $proxies, true);
     }
 }

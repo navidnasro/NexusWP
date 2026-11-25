@@ -1,9 +1,12 @@
 <?php
 
-namespace jetstore\app\models;
+namespace nexuswp\app\models;
 
-use jetstore\core\database\model\Model;
+use nexuswp\core\database\model\Model;
 
+/**
+ * Application log entry, kept for audit trails rather than debugging output.
+ */
 class Log extends Model
 {
     protected static string $table = 'logs';

@@ -1,12 +1,7 @@
 <?php
 
-use jetstore\app\controllers\AppController;
-use jetstore\core\route\Web;
+use nexuswp\app\controllers\AppController;
+use nexuswp\core\route\Web;
 
-Web::registerRule('shop-management', [new AppController(), 'render']);
-
-if (!get_option('plugin_rewrite_rules_are_flushed'))
-{
-    flush_rewrite_rules();
-    update_option('plugin_rewrite_rules_are_flushed', 'yes');
-}
+// the controller is resolved only when the rewrite rule matches
+Web::registerRule('app', [AppController::class, 'render']);

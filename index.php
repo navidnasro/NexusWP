@@ -1,3 +1,4 @@
 <?php
 
-// the quieter you become,the more you are able to hear
+// silence is golden
+defined('ABSPATH') || exit;

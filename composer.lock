@@ -4,15 +4,21 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "97ceb7b519f018977787bbb7be6354fc",
+    "content-hash": "6ba004e9f7e3264c39e6424840eb133d",
     "packages": [
         {
             "name": "nexuswp/core",
-            "version": "1.0.0",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/navidnasro/nexuswp-core.git",
+                "reference": "2dfd020cb9e5d2e8019a93b058dd6e9debfd87f8"
+            },
             "dist": {
-                "type": "path",
-                "url": "core",
-                "reference": "cf9e799cb9ac341143d3f0a2968b2a4f2b3af52a"
+                "type": "zip",
+                "url": "https://api.github.com/repos/navidnasro/nexuswp-core/zipball/2dfd020cb9e5d2e8019a93b058dd6e9debfd87f8",
+                "reference": "2dfd020cb9e5d2e8019a93b058dd6e9debfd87f8",
+                "shasum": ""
             },
             "require": {
                 "ext-json": "*",
@@ -27,6 +33,7 @@
                     "nexuswp\\core\\": "src/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -45,10 +52,11 @@
                 "router",
                 "wordpress"
             ],
-            "transport-options": {
-                "symlink": true,
-                "relative": true
-            }
+            "support": {
+                "issues": "https://github.com/navidnasro/nexuswp-core/issues",
+                "source": "https://github.com/navidnasro/nexuswp-core/tree/v1.0.0"
+            },
+            "time": "2026-11-25T14:18:37+00:00"
         }
     ],
     "packages-dev": [],

@@ -11,18 +11,6 @@
     "suggest": {
         "fakerphp/faker": "Needed only when seeding demo data, i.e. when NEXUSWP_RUN_SEEDERS is true"
     },
-    "repositories": [
-        {
-            "type": "path",
-            "url": "core",
-            "options": {
-                "symlink": true,
-                "versions": {
-                    "nexuswp/core": "1.0.0"
-                }
-            }
-        }
-    ],
     "autoload": {
         "psr-4": {
             "nexuswp\\app\\": "app/",
